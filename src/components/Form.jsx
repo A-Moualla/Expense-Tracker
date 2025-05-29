@@ -1,33 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Form = () => {
-  const [anotherPerson, setAnotherPerson] = useState({ name: "aa", age: "12" });
-  const nameRef = useRef(null);
-  const ageRef = useRef(null);
-  const person = {
-    name: "",
-    age: 0,
-  };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    person.name = nameRef.current.value;
-    person.age = ageRef.current.value;
-    console.log(person);
-    console.log(anotherPerson);
-  };
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Name
         </label>
         <input
-          ref={nameRef}
-          onChange={(e) =>
-            setAnotherPerson({ ...anotherPerson, name: e.target.value })
-          }
-          value={anotherPerson.name}
+          {...register("name")}
           id="name"
           type="text"
           className="form-control"
@@ -38,11 +24,7 @@ const Form = () => {
           Age
         </label>
         <input
-          ref={ageRef}
-          onChange={(e) =>
-            setAnotherPerson({ ...anotherPerson, age: e.target.value })
-          }
-          value={anotherPerson.age}
+          {...register("age")}
           id="age"
           type="number"
           className="form-control"
