@@ -1,3 +1,16 @@
 {
-  "expenses": []
+  "expenses": [
+    {
+      "id": "c0dc",
+      "description": "shawerma",
+      "amount": 2,
+      "category": "foods"
+    },
+    {
+      "id": "06e2",
+      "description": "cola",
+      "amount": 1,
+      "category": "drinks"
+    }
+  ]
 }

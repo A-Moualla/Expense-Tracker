@@ -3,43 +3,46 @@ import "./App.css";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseFilter from "./components/ExpenseFilter";
 import ExpenseForm from "./components/ExpenseForm";
+import { getExpenses, addExpense, deleteExpense } from "./api/expenses";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
 
+  async function fetchExpenses() {
+    try {
+      const data = await getExpenses();
+      setExpenses(data);
+    } catch (error) {
+      console.error("Error fetching Expenses:", error);
+    }
+  }
+
   useEffect(() => {
-    fetch("http://localhost:3001/expenses")
-      .then((res) => res.json())
-      .then((data) => setExpenses(data));
-  }, [expenses]);
+    fetchExpenses();
+  }, []);
 
   const visibleExpenses = selectedCategory
     ? expenses.filter((e) => e.category === selectedCategory)
     : expenses;
 
-  async function addExpense(expense) {
-    await fetch("http://localhost:3001/expenses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(expense),
-    });
-  }
-  async function deleteExpense(id) {
-    await fetch("http://localhost:3001/expenses/" + id, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    });
+  async function handleAdd(expense) {
+    try {
+      await addExpense({ ...expense });
+      fetchExpenses();
+    } catch (error) {
+      console.error("Error adding Expense:", error);
+    }
   }
 
-  const handleAdd = (expense) => {
-    setExpenses([...expenses]);
-    addExpense({ ...expense });
-  };
-  const handleDelete = (id) => {
-    setExpenses([...expenses]);
-    deleteExpense(id);
-  };
+  async function handleDelete(id) {
+    try {
+      await deleteExpense(id);
+      fetchExpenses();
+    } catch (error) {
+      console.error("Error deleting Expense:", error);
+    }
+  }
 
   return (
     <div>
