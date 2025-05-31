@@ -1,4 +1,11 @@
 import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import "./App.css";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseFilter from "./components/ExpenseFilter";
@@ -8,6 +15,7 @@ import { getExpenses, addExpense, deleteExpense } from "./api/expenses";
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
+  const navigate = useNavigate();
 
   async function fetchExpenses() {
     try {
@@ -29,6 +37,7 @@ function App() {
   async function handleAdd(expense) {
     try {
       await addExpense({ ...expense });
+      navigate("/");
       fetchExpenses();
     } catch (error) {
       console.error("Error adding Expense:", error);
@@ -46,17 +55,53 @@ function App() {
 
   return (
     <div>
-      <div className="mb-5">
-        <ExpenseForm onSubmit={handleAdd} />
-      </div>
-      <div className="mb-3">
-        <ExpenseFilter
-          onSelectCategory={(category) => setSelectedCategory(category)}
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Expenses</Link>
+          </li>
+          <li>
+            <Link to="/add">Add Expense</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <div className="mb-3">
+                <ExpenseFilter
+                  onSelectCategory={(category) => setSelectedCategory(category)}
+                />
+              </div>
+              <ExpenseList expenses={visibleExpenses} onDelete={handleDelete} />
+            </div>
+          }
         />
-      </div>
-      <ExpenseList expenses={visibleExpenses} onDelete={handleDelete} />
+        <Route
+          path="/add"
+          element={
+            <div className="mb-5">
+              <ExpenseForm onSubmit={handleAdd} />
+            </div>
+          }
+        />
+      </Routes>
     </div>
   );
+}
+function Home() {
+  return <h2>الصفحة الرئيسية</h2>;
+}
+
+function About() {
+  return <h2>من نحن</h2>;
+}
+
+function Contact() {
+  return <h2>اتصل بنا</h2>;
 }
 
 export default App;
